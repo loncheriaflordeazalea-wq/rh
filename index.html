@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equipo · Flor de Azalea</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0d0905;
+  --surface: #181008;
+  --card:    #1f1309;
+  --border:  #2d1c09;
+  --orange:  #f97316;
+  --fire:    #fb923c;
+  --gold:    #fbbf24;
+  --cream:   #fdf6ee;
+  --muted:   #9a7a5a;
+  --green:   #4ade80;
+  --blue:    #60a5fa;
+  --pink:    #f472b6;
+  --red:     #f87171;
+  --r:       14px;
+  --tf:      'Syne', sans-serif;
+  --bf:      'Instrument Sans', sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--bf);background:var(--bg);color:var(--cream);min-height:100vh;overflow-x:hidden}
+
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 70% 40% at 15% 5%,  rgba(249,115,22,.09) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 35% at 85% 85%, rgba(251,191,36,.06) 0%,transparent 50%);
+}
+
+/* ── HEADER ── */
+.hdr{position:sticky;top:0;z-index:50;background:rgba(13,9,5,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;gap:12px}
+.hdr-logo{width:38px;height:38px;background:var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.hdr-title{font-family:var(--tf);font-size:1rem;font-weight:800;letter-spacing:-.2px;line-height:1}
+.hdr-sub{font-size:.7rem;color:var(--muted);margin-top:2px}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.btn-refresh{padding:6px 12px;background:transparent;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);font-family:var(--bf);font-size:.75rem;cursor:pointer;transition:all .18s}
+.btn-refresh:hover{border-color:var(--orange);color:var(--orange)}
+.last-upd{font-size:.68rem;color:var(--muted)}
+
+/* ── STATS ── */
+.stats{display:flex;gap:10px;padding:18px 20px 0;max-width:960px;margin:0 auto;position:relative;z-index:10}
+.stat{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;min-width:0}
+.stat-n{font-family:var(--tf);font-size:1.4rem;font-weight:800;line-height:1}
+.stat-l{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:6px;padding:18px 20px 0;max-width:960px;margin:0 auto;position:relative;z-index:10;overflow-x:auto}
+.tab{padding:7px 16px;border-radius:999px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:var(--bf);font-size:.82rem;font-weight:500;cursor:pointer;transition:all .18s;white-space:nowrap;flex-shrink:0}
+.tab.on{background:var(--orange);border-color:var(--orange);color:#fff;font-weight:600}
+.tab:hover:not(.on){border-color:var(--muted);color:var(--cream)}
+
+/* ── BARRA HERRAMIENTAS ── */
+.toolbar{display:flex;gap:8px;padding:14px 20px 0;max-width:960px;margin:0 auto;position:relative;z-index:10;flex-wrap:wrap}
+.search-wrap{flex:1;min-width:180px;position:relative}
+.search-wrap input{width:100%;padding:9px 14px 9px 36px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;color:var(--cream);font-family:var(--bf);font-size:.85rem;outline:none;transition:border .2s}
+.search-wrap input::placeholder{color:var(--muted)}
+.search-wrap input:focus{border-color:var(--orange)}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:.85rem;pointer-events:none}
+
+/* ── GRID ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;padding:18px 20px 60px;max-width:960px;margin:0 auto;position:relative;z-index:10}
+
+/* ── TARJETA ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:transform .18s,border-color .18s;animation:up .4s both}
+.card:hover{transform:translateY(-2px);border-color:rgba(249,115,22,.3)}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.card-stripe{height:3px}
+.stripe-hoy   {background:var(--gold)}
+.stripe-man   {background:var(--orange)}
+.stripe-sem   {background:var(--fire)}
+.stripe-mes   {background:#92400e}
+
+.card-body{padding:15px 15px 13px}
+.card-row1{display:flex;align-items:flex-start;gap:11px;margin-bottom:13px}
+.av{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--tf);font-size:1.15rem;font-weight:800;flex-shrink:0;color:#fff}
+.av-o{background:linear-gradient(135deg,#fb923c,#e65c00)}
+.av-g{background:linear-gradient(135deg,#4ade80,#16a34a)}
+.av-b{background:linear-gradient(135deg,#60a5fa,#2563eb)}
+.av-p{background:linear-gradient(135deg,#f472b6,#be185d)}
+.av-y{background:linear-gradient(135deg,#fbbf24,#d97706)}
+.av-v{background:linear-gradient(135deg,#a78bfa,#7c3aed)}
+
+.card-info{flex:1;min-width:0}
+.card-nombre{font-weight:600;font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-cargo{font-size:.72rem;color:var(--muted);margin-top:2px}
+.card-chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.chip{font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:999px;white-space:nowrap}
+.chip-niv{background:rgba(96,165,250,.12);color:var(--blue)}
+.chip-hoy{background:rgba(251,191,36,.15);color:var(--gold)}
+.chip-man{background:rgba(249,115,22,.18);color:var(--fire)}
+.chip-sem{background:rgba(244,114,182,.12);color:var(--pink)}
+.chip-mes{background:rgba(96,165,250,.1);color:var(--blue)}
+.chip-ok {background:rgba(74,222,128,.1); color:var(--green)}
+
+.badge-dias{font-size:.68rem;font-weight:700;padding:3px 8px;border-radius:999px;flex-shrink:0;align-self:flex-start;white-space:nowrap}
+
+hr.sep{border:none;border-top:1px solid var(--border);margin:0 0 11px}
+
+.rows{display:flex;flex-direction:column;gap:6px}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.rl{font-size:.68rem;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);flex-shrink:0}
+.rv{font-size:.8rem;font-weight:500;text-align:right}
+.rv-hi{color:var(--orange);font-weight:700}
+
+/* INPUT DE HORAS dentro de la tarjeta */
+.horas-box{margin-top:11px;background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.18);border-radius:10px;padding:10px 12px}
+.horas-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--orange);margin-bottom:7px}
+.horas-row{display:flex;gap:6px;align-items:center}
+.horas-input{flex:1;padding:7px 10px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--cream);font-family:var(--bf);font-size:.88rem;outline:none;transition:border .2s;text-align:center}
+.horas-input:focus{border-color:var(--orange)}
+.btn-save-hrs{padding:7px 12px;background:var(--orange);border:none;border-radius:8px;color:#fff;font-family:var(--bf);font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:opacity .18s}
+.btn-save-hrs:hover{opacity:.85}
+.btn-save-hrs:disabled{opacity:.45;cursor:not-allowed}
+.total-display{margin-top:8px;font-size:.82rem;text-align:right}
+.total-display strong{color:var(--green);font-family:var(--tf);font-size:1rem}
+
+/* ── VISTA PRÓXIMOS ── */
+.prox-wrap{max-width:960px;margin:0 auto;padding:18px 20px 60px;position:relative;z-index:10}
+.prox-title{font-family:var(--tf);font-size:1rem;font-weight:700;color:var(--orange);margin-bottom:14px}
+.prox-list{display:flex;flex-direction:column;gap:9px}
+.prox-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 16px;display:flex;align-items:center;gap:13px;animation:up .3s both}
+.prox-av{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:var(--tf);font-size:.95rem;font-weight:800;color:#fff;flex-shrink:0}
+.prox-info{flex:1}
+.prox-n{font-weight:600;font-size:.88rem}
+.prox-c{font-size:.72rem;color:var(--muted);margin-top:1px}
+.prox-f{font-size:.72rem;color:var(--orange);margin-top:3px}
+.prox-cnt{font-family:var(--tf);font-size:1.4rem;font-weight:800;color:var(--orange);text-align:right;flex-shrink:0;line-height:1}
+.prox-cnt span{display:block;font-family:var(--bf);font-size:.62rem;font-weight:400;color:var(--muted);text-align:center;margin-top:2px}
+
+/* ── ESTADO / LOADING ── */
+.estado{max-width:960px;margin:60px auto;padding:0 20px;text-align:center;color:var(--muted);position:relative;z-index:10}
+.estado-icon{font-size:3rem;display:block;margin-bottom:12px}
+.estado p{font-size:.88rem;line-height:1.6}
+
+/* ── SETUP URL ── */
+.setup-card{max-width:520px;margin:40px auto;padding:0 20px;position:relative;z-index:10}
+.setup-inner{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:28px 24px}
+.setup-inner h2{font-family:var(--tf);font-size:1.2rem;color:var(--orange);margin-bottom:6px}
+.setup-inner p{font-size:.83rem;color:var(--muted);line-height:1.5;margin-bottom:18px}
+.setup-label{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:6px}
+.setup-row{display:flex;gap:8px}
+.setup-input{flex:1;padding:10px 13px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--cream);font-family:var(--bf);font-size:.85rem;outline:none;transition:border .2s}
+.setup-input:focus{border-color:var(--orange)}
+.setup-btn{padding:10px 18px;background:var(--orange);border:none;border-radius:10px;color:#fff;font-family:var(--bf);font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.setup-btn:hover{opacity:.88}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border);color:var(--cream);padding:10px 20px;border-radius:999px;font-size:.84rem;font-weight:500;transition:transform .3s cubic-bezier(.34,1.56,.64,1);z-index:999;pointer-events:none;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media(max-width:480px){
+  .stats{gap:6px}
+  .stat-n{font-size:1.1rem}
+  .grid{grid-template-columns:1fr}
+  .hdr-right .last-upd{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-logo">🌸</div>
+  <div>
+    <div class="hdr-title">Flor de Azalea</div>
+    <div class="hdr-sub">Sistema de Equipo</div>
+  </div>
+  <div class="hdr-right">
+    <span class="last-upd" id="last-upd"></span>
+    <button class="btn-refresh" onclick="cargar()">↻ Actualizar</button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats" id="stats" style="display:none">
+  <div class="stat"><div class="stat-n" id="sn-total" style="color:var(--orange)">0</div><div class="stat-l">Empleados activos</div></div>
+  <div class="stat"><div class="stat-n" id="sn-hoy"   style="color:var(--gold)">0</div><div class="stat-l">Cumplen hoy 🎂</div></div>
+  <div class="stat"><div class="stat-n" id="sn-prox"  style="color:var(--fire)">0</div><div class="stat-l">Próximos 30d</div></div>
+  <div class="stat"><div class="stat-n" id="sn-nom"   style="color:var(--green)">$0</div><div class="stat-l">Nómina semana</div></div>
+</div>
+
+<!-- TABS -->
+<div class="tabs" id="tabs" style="display:none">
+  <button class="tab on"  onclick="setTab('equipo')">👥 Equipo</button>
+  <button class="tab"     onclick="setTab('cumple')">🎂 Cumpleaños</button>
+  <button class="tab"     onclick="setTab('nomina')">💰 Nómina</button>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar" id="toolbar" style="display:none">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="q" placeholder="Buscar nombre o cargo…" oninput="render()">
+  </div>
+</div>
+
+<!-- CONTENIDO -->
+<div id="main"></div>
+
+<!-- SETUP (primera vez) -->
+<div id="setup" style="display:none">
+  <div class="setup-card">
+    <div class="setup-inner">
+      <h2>🔗 Conectar con Google Sheets</h2>
+      <p>Pega la URL de tu Web App de Apps Script.<br>Solo se pide una vez — se guarda en este navegador.</p>
+      <label class="setup-label">URL de la Web App (termina en /exec)</label>
+      <div class="setup-row">
+        <input class="setup-input" id="url-inp" type="url" placeholder="https://script.google.com/macros/s/…/exec">
+        <button class="setup-btn" onclick="conectar()">Conectar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────
+const LS  = "flor_api_url";
+let API   = localStorage.getItem(LS) || "";
+let TAB   = "equipo";
+let DATA  = [];
+
+// ── BOOT ──────────────────────────────────────────────────
+(function init() {
+  if (!API) {
+    document.getElementById("setup").style.display = "block";
+  } else {
+    cargar();
+  }
+})();
+
+function conectar() {
+  const v = document.getElementById("url-inp").value.trim();
+  if (!v.startsWith("https://")) { toast("⚠️ URL inválida"); return; }
+  API = v;
+  localStorage.setItem(LS, v);
+  document.getElementById("setup").style.display = "none";
+  cargar();
+}
+
+// ── CARGAR DATOS ──────────────────────────────────────────
+async function cargar() {
+  showEstado("⏳", "Cargando equipo…");
+  try {
+    const r    = await fetch(API + "?action=empleados&_=" + Date.now());
+    const data = await r.json();
+    if (!data.ok) throw new Error(data.error);
+
+    DATA = data.empleados;
+    renderStats(DATA);
+    showUI();
+    render();
+    document.getElementById("last-upd").textContent =
+      "Actualizado " + new Date().toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"});
+  } catch(err) {
+    showEstado("⚠️", "No se pudo conectar.<br><small style='color:var(--red)'>" + err.message + "</small><br><br><button onclick=\"localStorage.removeItem('"+LS+"');location.reload()\" style='padding:7px 14px;background:var(--orange);border:none;border-radius:8px;color:white;cursor:pointer;font-size:.8rem'>Cambiar URL</button>");
+  }
+}
+
+// ── STATS ─────────────────────────────────────────────────
+function renderStats(lista) {
+  const hoy  = lista.filter(e => dias(e.fechaNac) === 0).length;
+  const prox = lista.filter(e => { const d = dias(e.fechaNac); return d > 0 && d <= 30; }).length;
+  const nom  = lista.reduce((s,e) => s + (e.totalSemanal||0), 0);
+  document.getElementById("sn-total").textContent = lista.length;
+  document.getElementById("sn-hoy").textContent   = hoy;
+  document.getElementById("sn-prox").textContent  = prox;
+  document.getElementById("sn-nom").textContent   = "$" + nom.toLocaleString("es-MX");
+}
+
+function showUI() {
+  ["stats","tabs","toolbar"].forEach(id => {
+    document.getElementById(id).style.display = "";
+  });
+}
+
+// ── RENDER SEGÚN TAB ──────────────────────────────────────
+function render() {
+  if (TAB === "equipo")  renderEquipo();
+  else if (TAB === "cumple")  renderCumple();
+  else if (TAB === "nomina")  renderNomina();
+}
+
+function setTab(id) {
+  TAB = id;
+  document.querySelectorAll(".tab").forEach((b,i) =>
+    b.classList.toggle("on", ["equipo","cumple","nomina"][i] === id)
+  );
+  const tb = document.getElementById("toolbar");
+  tb.style.display = id === "equipo" ? "" : "none";
+  render();
+}
+
+// ── EQUIPO ────────────────────────────────────────────────
+function renderEquipo() {
+  const q = (document.getElementById("q")?.value || "").toLowerCase();
+  let lista = DATA.filter(e =>
+    e.nombre.toLowerCase().includes(q) || e.cargo.toLowerCase().includes(q)
+  ).sort((a,b) => dias(a.fechaNac) - dias(b.fechaNac));
+
+  if (!lista.length) {
+    showEstado("😶", "No se encontraron empleados."); return;
+  }
+  document.getElementById("main").innerHTML =
+    `<div class="grid">${lista.map((e,i) => cardHTML(e,i)).join("")}</div>`;
+}
+
+// ── CUMPLEAÑOS ────────────────────────────────────────────
+function renderCumple() {
+  const lista = [...DATA]
+    .filter(e => { const d = dias(e.fechaNac); return d >= 0 && d <= 60; })
+    .sort((a,b) => dias(a.fechaNac) - dias(b.fechaNac));
+
+  if (!lista.length) {
+    showEstado("😴","Nadie cumple años en los próximos 60 días."); return;
+  }
+
+  document.getElementById("main").innerHTML = `
+    <div class="prox-wrap">
+      <div class="prox-title">🎂 Próximos cumpleaños — 60 días</div>
+      <div class="prox-list">${lista.map((e,i) => proxHTML(e,i)).join("")}</div>
+    </div>`;
+}
+
+// ── NÓMINA ────────────────────────────────────────────────
+function renderNomina() {
+  const lista = [...DATA].sort((a,b) => a.nombre.localeCompare(b.nombre));
+  const totalNom = lista.reduce((s,e) => s + (e.totalSemanal||0), 0);
+
+  const rows = lista.map((e,i) => `
+    <div class="card" style="animation-delay:${i*.04}s">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-row1">
+          <div class="av ${avColor(e.cargo)}">${e.nombre.charAt(0)}</div>
+          <div class="card-info">
+            <div class="card-nombre">${e.nombre}</div>
+            <div class="card-cargo">${e.cargo}</div>
+          </div>
+        </div>
+        <hr class="sep">
+        <div class="rows">
+          <div class="row"><span class="rl">Costo/hora</span><span class="rv">$${e.costoHora.toLocaleString("es-MX")}</span></div>
+          <div class="row"><span class="rl">Horas semana</span><span class="rv" id="hrs-disp-${e.id}">${e.horasSemana}h</span></div>
+          <div class="row"><span class="rl">Total semana</span><span class="rv rv-hi" id="tot-disp-${e.id}">$${e.totalSemanal.toLocaleString("es-MX")}</span></div>
+        </div>
+        <div class="horas-box">
+          <div class="horas-label">✏️ Actualizar horas esta semana</div>
+          <div class="horas-row">
+            <input class="horas-input" id="inp-${e.id}" type="number" min="0" max="80" step="0.5" value="${e.horasSemana}" placeholder="horas">
+            <button class="btn-save-hrs" id="btn-${e.id}" onclick="guardarHoras('${e.id}', ${e.costoHora})">Guardar</button>
+          </div>
+          <div class="total-display" id="prev-${e.id}">
+            Vista previa: <strong>$${e.totalSemanal.toLocaleString("es-MX")}</strong>
+          </div>
+        </div>
+      </div>
+    </div>`).join("");
+
+  document.getElementById("main").innerHTML = `
+    <div style="max-width:960px;margin:0 auto;padding:10px 20px 8px;position:relative;z-index:10">
+      <div style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:12px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Total nómina semanal</span>
+        <span style="font-family:var(--tf);font-size:1.5rem;font-weight:800;color:var(--green)">$${totalNom.toLocaleString("es-MX")}</span>
+      </div>
+    </div>
+    <div class="grid">${rows}</div>`;
+
+  // Preview en tiempo real
+  lista.forEach(e => {
+    const inp = document.getElementById("inp-" + e.id);
+    if (inp) inp.addEventListener("input", () => {
+      const h = parseFloat(inp.value) || 0;
+      const t = h * e.costoHora;
+      document.getElementById("prev-" + e.id).innerHTML =
+        `Vista previa: <strong>$${t.toLocaleString("es-MX")}</strong>`;
+    });
+  });
+}
+
+// ── GUARDAR HORAS ─────────────────────────────────────────
+async function guardarHoras(id, costoHora) {
+  const inp = document.getElementById("inp-" + id);
+  const btn = document.getElementById("btn-" + id);
+  const horas = parseFloat(inp.value);
+  if (isNaN(horas) || horas < 0) { toast("⚠️ Ingresa un número válido"); return; }
+
+  btn.disabled = true;
+  btn.textContent = "…";
+
+  try {
+    const url = `${API}?action=actualizarHoras&id=${encodeURIComponent(id)}&horas=${horas}&_=${Date.now()}`;
+    const r   = await fetch(url);
+    const res = await r.json();
+
+    if (!res.ok) throw new Error(res.error);
+
+    // Actualizar display local
+    document.getElementById("hrs-disp-" + id).textContent = horas + "h";
+    document.getElementById("tot-disp-" + id).textContent = "$" + res.total.toLocaleString("es-MX");
+
+    // Actualizar DATA local
+    const emp = DATA.find(e => e.id === id);
+    if (emp) { emp.horasSemana = horas; emp.totalSemanal = res.total; }
+    renderStats(DATA);
+
+    toast("✅ Horas guardadas — Total: $" + res.total.toLocaleString("es-MX"));
+  } catch(err) {
+    toast("❌ Error: " + err.message);
+  }
+
+  btn.disabled = false;
+  btn.textContent = "Guardar";
+}
+
+// ── CARDS HTML ────────────────────────────────────────────
+function cardHTML(e, i) {
+  const d     = dias(e.fechaNac);
+  const sc    = d===0?"stripe-hoy":d===1?"stripe-man":d<=7?"stripe-sem":d<=30?"stripe-mes":"";
+  const bc    = d===0?"chip-hoy":d===1?"chip-man":d<=7?"chip-sem":d<=30?"chip-mes":"";
+  const bt    = d===0?"🎉 Hoy":d===1?"🔔 Mañana":d<=7?`📅 ${d}d`:d<=30?`🗓 ${d}d`:`${d}d`;
+  const ini   = e.nombre.charAt(0);
+  const nxc   = nextCumple(e.fechaNac);
+
+  let cdown = "";
+  if (d === 0)
+    cdown = `<div style="margin-top:11px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:9px;padding:9px 12px;font-size:.8rem;">🎉 <strong style="color:var(--gold)">¡Hoy es su cumpleaños!</strong> Felicita a ${e.nombre.split(" ")[0]}</div>`;
+  else if (d <= 7)
+    cdown = `<div style="margin-top:11px;background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.18);border-radius:9px;padding:9px 12px;font-size:.8rem;">🎂 Cumpleaños en <strong style="color:var(--orange)">${d} día${d!==1?"s":""}</strong> — ${nxc ? fmtSh(nxc) : ""}</div>`;
+
+  return `<div class="card" style="animation-delay:${i*.05}s">
+    <div class="card-stripe ${sc}"></div>
+    <div class="card-body">
+      <div class="card-row1">
+        <div class="av ${avColor(e.cargo)}">${ini}</div>
+        <div class="card-info">
+          <div class="card-nombre">${e.nombre}</div>
+          <div class="card-cargo">${e.cargo}${e.nivel?" · Niv."+e.nivel:""}</div>
+          <div class="card-chips">
+            ${e.nivel?`<span class="chip chip-niv">Nivel ${e.nivel}</span>`:""}
+            ${bc?`<span class="chip ${bc}">${bt}</span>`:""}
+          </div>
+        </div>
+        <div class="badge-dias" style="background:rgba(255,255,255,.05);color:var(--muted);font-size:.65rem;padding:2px 7px;border-radius:999px">${bt}</div>
+      </div>
+      <hr class="sep">
+      <div class="rows">
+        <div class="row"><span class="rl">Nacimiento</span><span class="rv">${e.fechaNac?fmtSh(e.fechaNac):"—"}</span></div>
+        <div class="row"><span class="rl">Antigüedad</span><span class="rv">${e.antiguedad||"—"}</span></div>
+        <div class="row"><span class="rl">Inicio</span><span class="rv">${e.fechaInicio?fmtSh(e.fechaInicio):"—"}</span></div>
+        ${e.habilidades?`<div class="row"><span class="rl">Habilidades</span><span class="rv" style="font-size:.74rem;color:var(--muted)">${e.habilidades}</span></div>`:""}
+      </div>
+      ${cdown}
+    </div>
+  </div>`;
+}
+
+function proxHTML(e, i) {
+  const d   = dias(e.fechaNac);
+  const nxc = nextCumple(e.fechaNac);
+  return `<div class="prox-item" style="animation-delay:${i*.06}s">
+    <div class="prox-av ${avColor(e.cargo)}">${e.nombre.charAt(0)}</div>
+    <div class="prox-info">
+      <div class="prox-n">${e.nombre}</div>
+      <div class="prox-c">${e.cargo}</div>
+      <div class="prox-f">🎂 ${nxc?fmtLg(nxc):"—"}</div>
+    </div>
+    <div class="prox-cnt">
+      ${d===0?"🎉":d}
+      <span>${d===0?"¡Hoy!":d===1?"mañana":"días"}</span>
+    </div>
+  </div>`;
+}
+
+// ── HELPERS ───────────────────────────────────────────────
+function dias(fn) {
+  if (!fn) return 9999;
+  const hoy = new Date(), nac = new Date(fn+"T12:00:00");
+  const c   = new Date(hoy.getFullYear(), nac.getMonth(), nac.getDate());
+  const hm  = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+  if (c < hm) c.setFullYear(hoy.getFullYear()+1);
+  return Math.round((c-hm)/86400000);
+}
+function nextCumple(fn) {
+  if (!fn) return null;
+  const hoy = new Date(), nac = new Date(fn+"T12:00:00");
+  const c   = new Date(hoy.getFullYear(), nac.getMonth(), nac.getDate());
+  const hm  = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+  if (c < hm) c.setFullYear(hoy.getFullYear()+1);
+  return c.toISOString().slice(0,10);
+}
+const MS = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const DS = ["dom","lun","mar","mié","jue","vie","sáb"];
+function fmtSh(s) {
+  const d = new Date(s+"T12:00:00");
+  return `${d.getDate()} ${MS[d.getMonth()]} ${d.getFullYear()}`;
+}
+function fmtLg(s) {
+  const d = new Date(s+"T12:00:00");
+  return `${DS[d.getDay()]} ${d.getDate()} de ${MS[d.getMonth()]}`;
+}
+
+const AVC = ["av-o","av-g","av-b","av-p","av-y","av-v"];
+function avColor(c) {
+  let h = 0;
+  for (let i = 0; i < (c||"").length; i++) h = (h*31+c.charCodeAt(i))%AVC.length;
+  return AVC[h];
+}
+function showEstado(ic, msg) {
+  document.getElementById("main").innerHTML =
+    `<div class="estado"><span class="estado-icon">${ic}</span><p>${msg}</p></div>`;
+}
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+setInterval(() => { if (API) cargar(); }, 5*60*1000);
+</script>
+</body>
+</html>
